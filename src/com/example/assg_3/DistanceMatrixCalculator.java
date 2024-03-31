@@ -12,17 +12,17 @@ public class DistanceMatrixCalculator extends DistanceCalculator {
      * Stores the original data points (feature vectors).
      */
     private final double[][] data;
-
+    private final String[][] data_diagnosis;
 
     /**
      * Constructor to initialize the distance matrix calculation.
      *
      * @param data          The input data points as a 2D double array.
-
+     * @param dataDiagnosis
      */
     public DistanceMatrixCalculator(double[][] data, String[][] dataDiagnosis) {
         this.data = data;
-
+        this.data_diagnosis = dataDiagnosis;
 
         distanceMatrix = new double[data.length][data.length];
 
@@ -40,12 +40,10 @@ public class DistanceMatrixCalculator extends DistanceCalculator {
         return distanceMatrix;
     }
 
-
-
     public int[][] findNearestNeighbors(int N) {
         int numSamples = distanceMatrix.length;
         int[][] nearestNeighbors = new int[numSamples][N];
-
+        String[][] diagnosisResult = new String[numSamples][N];
 
         for (int i = 0; i < numSamples; i++) {
             // Create a temporary array to store neighbor indices and distances (can be a custom class)
@@ -62,10 +60,13 @@ public class DistanceMatrixCalculator extends DistanceCalculator {
 
             // Extract top N neighbor indices
             for (int j = 0; j < Math.min(N, neighbors.size()); j++) {
-                nearestNeighbors[i][j] = neighbors.get(j).getIndex();
+                int index = neighbors.get(j).getIndex();
+                nearestNeighbors[i][j] = index;
+                diagnosisResult[i][j] = Result.diagnosisOutput(data_diagnosis, index, i);
+
             }
         }
-
+        PrintArray.printArray(diagnosisResult);
         return nearestNeighbors;
     }
 
@@ -87,7 +88,13 @@ public class DistanceMatrixCalculator extends DistanceCalculator {
         }
     }
 
-
+    private static class Result {
+        public static String diagnosisOutput(String[][] data_diagnosis, int index, int sno) {
+            String id = data_diagnosis[index][0];
+            String diagnosis = data_diagnosis[index][1];
+            return sno + "-" + id + "-" + diagnosis;
+        }
+    }
 }
 
 abstract class DistanceCalculator {
