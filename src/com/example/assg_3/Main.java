@@ -1,13 +1,10 @@
 package com.example.assg_3;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.ArrayList;
+
 import java.util.Arrays;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String filePath = "C:\\Users\\kharl\\IdeaProjects\\Sem_2\\src\\com\\example\\assg_3\\Experiment_data.csv";
+        String filePath = "C:\\Users\\kharl\\IdeaProjects\\Sem_2\\src\\com\\example\\assg_3\\Experiment_sample.csv";
 
         // Reading CSV data into 2 arrays: diagnosis and values
         ReadCSV readCSV = new ReadCSV(filePath);
@@ -16,22 +13,22 @@ public class Main {
 
         DistanceMatrixCalculator calculator = new DistanceMatrixCalculator(data_values, data_diagnosis);
         double[][] distanceMatrix = calculator.getDistanceMatrix();
-        int[][] nearestNeighbors = calculator.findNearestNeighbors(3);
-//        System.out.println("Number of rows: " + data.length);
-//        System.out.println("Number of columns: " + data[0].length);
-//        for (int i = 0; i < data.length; i++) {
-//            System.out.println(String.join(",", data[i]));
-//        }
+        String[][] nearestNeighbors = calculator.findNearestNeighbors(3);
+//        int[][] nearestNeighbors = calculator.findNearestNeighbors(3);
+
+        DiagnosisPredictor predictor = new DiagnosisPredictor(nearestNeighbors, data_diagnosis);
+        boolean[] predictionResults = predictor.predictAndCompareDiagnosis();
+        int numCorrect = predictor.countCorrectPredictions(predictionResults);
+        double analysisPercent = predictor.getAnalysis();
+
 
 //        PrintArray.printArray(data_values);
-//        PrintArray.printArray(data_diagnosis);
-//        PrintArray.printArray(distanceMatrix);
-//        PrintArray.printArray(nearestNeighbors);
-//        System.out.println(Arrays.deepToString(data_values).replace("], ", "],\n"));
-//        System.out.println(Arrays.deepToString(data_diagnosis).replace("], ", "],\n"));
-//        System.out.println(Arrays.deepToString(distanceMatrix).replace("], ", "],\n"));
-        System.out.println(Arrays.deepToString(nearestNeighbors).replace("], ", "],\n"));
-//        System.out.println(nearestNeighbors.length);
+        PrintArray.printArray(data_diagnosis);
+        PrintArray.printArray(distanceMatrix);
+        PrintArray.printArray(nearestNeighbors);
+        System.out.println(Arrays.toString(predictionResults));
+        System.out.println(numCorrect);
+        System.out.format("%.2f", analysisPercent*100);
     }
 
 
